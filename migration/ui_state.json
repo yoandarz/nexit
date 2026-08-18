@@ -1,0 +1,65 @@
+{
+  "last_trigger": {
+    "martes": "martes:2026-05-18:22:20",
+    "lunes": "lunes:2026-05-17:21:00",
+    "miercoles": "miercoles:2026-05-19:22:20",
+    "jueves": "jueves:2026-05-13:22:20",
+    "viernes": "viernes:2026-05-14:22:20",
+    "sabado": "sabado:2026-05-16:04:32",
+    "domingo": "domingo|2026-04-26|22:20"
+  },
+  "checked_items": {
+    "martes": [],
+    "lunes": [],
+    "miercoles": [],
+    "jueves": [],
+    "viernes": [],
+    "sabado": [],
+    "domingo": []
+  },
+  "checked_entries": {
+    "martes": [
+      "category:cat_1:item:cat_1_item_8"
+    ],
+    "viernes": [],
+    "jueves": [],
+    "lunes": [],
+    "miercoles": [],
+    "sabado": [],
+    "domingo": []
+  },
+  "snoozed_until": {},
+  "collapsed_categories": {
+    "martes": [
+      "cat_7",
+      "cat_4",
+      "cat_8",
+      "cat_1"
+    ],
+    "viernes": [
+      "cat_4",
+      "cat_8"
+    ],
+    "jueves": [
+      "cat_8",
+      "cat_7",
+      "cat_4"
+    ],
+    "lunes": [
+      "cat_4",
+      "cat_7",
+      "cat_8"
+    ],
+    "miercoles": [
+      "cat_7",
+      "cat_8",
+      "cat_4"
+    ],
+    "sabado": [
+      "cat_4"
+    ],
+    "domingo": [
+      "cat_4"
+    ]
+  }
+}

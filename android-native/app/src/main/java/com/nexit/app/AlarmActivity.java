@@ -1,0 +1,3 @@
+package com.nexit.app;
+import android.app.Activity;import android.content.Intent;import android.os.Bundle;import android.view.Gravity;import android.widget.Button;import android.widget.LinearLayout;import android.widget.TextView;
+public class AlarmActivity extends Activity{ @Override public void onCreate(Bundle b){super.onCreate(b);LinearLayout l=new LinearLayout(this);l.setOrientation(LinearLayout.VERTICAL);l.setGravity(Gravity.CENTER);l.setPadding(40,40,40,40);TextView t=new TextView(this);t.setText("Nexit\n\nEs hora de revisar tu preparación.");t.setTextSize(22);Button x=new Button(this);x.setText("Abrir Nexit");x.setOnClickListener(v->{startActivity(new Intent(this,MainActivity.class));finish();});l.addView(t);l.addView(x);setContentView(l);} }

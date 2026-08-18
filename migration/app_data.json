@@ -1,0 +1,360 @@
+{
+  "schedules": {
+    "lunes": {
+      "show_on_day": "domingo",
+      "show_at": "21:00",
+      "category_ids": [
+        "cat_4",
+        "cat_8",
+        "cat_7"
+      ],
+      "items": []
+    },
+    "martes": {
+      "show_on_day": "lunes",
+      "show_at": "22:20",
+      "category_ids": [
+        "cat_1",
+        "cat_4",
+        "cat_7",
+        "cat_8",
+        "cat_2"
+      ],
+      "items": []
+    },
+    "miercoles": {
+      "show_on_day": "martes",
+      "show_at": "22:20",
+      "category_ids": [
+        "cat_8",
+        "cat_7",
+        "cat_4"
+      ],
+      "items": []
+    },
+    "jueves": {
+      "show_on_day": "miercoles",
+      "show_at": "22:20",
+      "category_ids": [
+        "cat_1",
+        "cat_4",
+        "cat_7",
+        "cat_8"
+      ],
+      "items": []
+    },
+    "viernes": {
+      "show_on_day": "jueves",
+      "show_at": "22:20",
+      "category_ids": [
+        "cat_4",
+        "cat_8",
+        "cat_7"
+      ],
+      "items": []
+    },
+    "sabado": {
+      "show_on_day": "sabado",
+      "show_at": "04:32",
+      "category_ids": [
+        "cat_4",
+        "cat_8",
+        "cat_7"
+      ],
+      "items": []
+    },
+    "domingo": {
+      "show_on_day": "sabado",
+      "show_at": "22:20",
+      "category_ids": [
+        "cat_4",
+        "cat_8"
+      ],
+      "items": []
+    }
+  },
+  "categories": [
+    {
+      "id": "cat_1",
+      "name": "Salida al colegio Ayalde",
+      "items": [
+        {
+          "id": "cat_1_item_1",
+          "name": "Ordenador",
+          "active": true
+        },
+        {
+          "id": "cat_1_item_2",
+          "name": "Cable de ordenador",
+          "active": true
+        },
+        {
+          "id": "cat_1_item_3",
+          "name": "Tablet",
+          "active": true
+        },
+        {
+          "id": "cat_1_item_4",
+          "name": "Móvil",
+          "active": true
+        },
+        {
+          "id": "cat_1_item_5",
+          "name": "Cargador de móvil y tablet",
+          "active": true
+        },
+        {
+          "id": "cat_1_item_6",
+          "name": "Barik",
+          "active": true
+        },
+        {
+          "id": "cat_1_item_7",
+          "name": "Llaves",
+          "active": true
+        },
+        {
+          "id": "cat_1_item_8",
+          "name": "Paraguas",
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": "cat_4",
+      "name": "Salir al Gimnasio",
+      "items": [
+        {
+          "id": "cat_4_item_1",
+          "name": "Móvil",
+          "active": true
+        },
+        {
+          "id": "cat_4_item_2",
+          "name": "Plan de entrenamiento",
+          "active": true
+        },
+        {
+          "id": "cat_4_item_3",
+          "name": "Toalla",
+          "active": true
+        },
+        {
+          "id": "cat_4_item_4",
+          "name": "Zapatos",
+          "active": true
+        },
+        {
+          "id": "cat_4_item_5",
+          "name": "Franela",
+          "active": true
+        },
+        {
+          "id": "cat_4_item_6",
+          "name": "Pantalones",
+          "active": true
+        },
+        {
+          "id": "cat_4_item_7",
+          "name": "Interior",
+          "active": true
+        },
+        {
+          "id": "cat_4_item_8",
+          "name": "Calcetines",
+          "active": true
+        },
+        {
+          "id": "cat_4_item_9",
+          "name": "Guantes",
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": "cat_5",
+      "name": "Invierno",
+      "items": [
+        {
+          "id": "cat_5_item_1",
+          "name": "Chaqueta",
+          "active": true
+        },
+        {
+          "id": "cat_5_item_2",
+          "name": "Abrigo",
+          "active": true
+        },
+        {
+          "id": "cat_5_item_3",
+          "name": "Calentador inferior",
+          "active": true
+        },
+        {
+          "id": "cat_5_item_4",
+          "name": "Calentador superior",
+          "active": true
+        },
+        {
+          "id": "cat_5_item_5",
+          "name": "Guantes",
+          "active": true
+        },
+        {
+          "id": "cat_5_item_6",
+          "name": "Bufanda",
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": "cat_6",
+      "name": "Eventos formales",
+      "items": [
+        {
+          "id": "cat_6_item_1",
+          "name": "Saco, amaericana o chaqueta",
+          "active": true
+        },
+        {
+          "id": "cat_6_item_2",
+          "name": "Correa",
+          "active": true
+        },
+        {
+          "id": "cat_6_item_3",
+          "name": "Camisa",
+          "active": true
+        },
+        {
+          "id": "cat_6_item_4",
+          "name": "Pantalón",
+          "active": true
+        },
+        {
+          "id": "cat_6_item_5",
+          "name": "Ropa interior",
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": "cat_7",
+      "name": "Tocar cello",
+      "items": [
+        {
+          "id": "cat_7_item_1",
+          "name": "Colofonía",
+          "active": true
+        },
+        {
+          "id": "cat_7_item_2",
+          "name": "Arco",
+          "active": true
+        },
+        {
+          "id": "cat_7_item_3",
+          "name": "Cable de sonido",
+          "active": true
+        },
+        {
+          "id": "cat_7_item_4",
+          "name": "Correa",
+          "active": true
+        },
+        {
+          "id": "cat_7_item_5",
+          "name": "Cuerdas",
+          "active": true
+        },
+        {
+          "id": "cat_7_item_6",
+          "name": "Partituras",
+          "active": true
+        },
+        {
+          "id": "cat_7_item_7",
+          "name": "Atril",
+          "active": true
+        },
+        {
+          "id": "cat_7_item_8",
+          "name": "Sonido",
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": "cat_8",
+      "name": "Cuidado personal",
+      "items": [
+        {
+          "id": "cat_8_item_1",
+          "name": "Perfume",
+          "active": true
+        },
+        {
+          "id": "cat_8_item_2",
+          "name": "Jabón",
+          "active": true
+        },
+        {
+          "id": "cat_8_item_3",
+          "name": "Cepillo de dientes",
+          "active": true
+        },
+        {
+          "id": "cat_8_item_4",
+          "name": "Crema dental",
+          "active": true
+        },
+        {
+          "id": "cat_8_item_5",
+          "name": "Enjuague bucal",
+          "active": true
+        },
+        {
+          "id": "cat_8_item_6",
+          "name": "Corte de cabello",
+          "active": true
+        },
+        {
+          "id": "cat_8_item_7",
+          "name": "Cargar baterías de maquina cortadora de cabello",
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": "cat_2",
+      "name": "Salidas ordinarias",
+      "items": [
+        {
+          "id": "cat_2_item_1",
+          "name": "Pantalón",
+          "active": true
+        },
+        {
+          "id": "cat_2_item_2",
+          "name": "Camisa",
+          "active": true
+        },
+        {
+          "id": "cat_2_item_3",
+          "name": "Ropa interior",
+          "active": true
+        },
+        {
+          "id": "cat_2_item_4",
+          "name": "Chaqueta",
+          "active": true
+        },
+        {
+          "id": "cat_2_item_5",
+          "name": "Zapatos",
+          "active": true
+        }
+      ]
+    }
+  ]
+}

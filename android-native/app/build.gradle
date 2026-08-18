@@ -1,0 +1,13 @@
+plugins { id 'com.android.application' }
+android {
+    namespace 'com.nexit.app'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.nexit.app'
+        minSdk 26
+        targetSdk 35
+        versionCode 100
+        versionName '1.0.0'
+    }
+}
+dependencies { implementation 'androidx.core:core:1.15.0' }

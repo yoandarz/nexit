@@ -1,0 +1,6 @@
+{
+  "app_enabled": true,
+  "start_with_windows": true,
+  "snooze_minutes": 2,
+  "appearance": "dark"
+}
