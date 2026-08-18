@@ -74,14 +74,14 @@
     if(state.settingsOpen)render();
   }
 
-  function saveRecord(type,id,payload,{deletedAt=null,render=true}={}){
+  function saveRecord(type,id,payload,{deletedAt=null,render:shouldRender=true}={}){
     const stamp=nowIso();
     const idx=state.records.findIndex(r=>r.record_id===id);
     const row={record_id:id,record_type:type,payload,client_updated_at:stamp,deleted_at:deletedAt,dirty:true};
     if(idx>=0) state.records[idx]={...state.records[idx],...row}; else state.records.push(row);
     persistLocal();
     state.syncState='pending';
-    if(render) render();
+    if(shouldRender) render();
     scheduleSync();
     scheduleAlarmReconcile();
   }
