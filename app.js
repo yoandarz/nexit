@@ -313,6 +313,59 @@
 
   function toast(message){ clearTimeout(state.toastTimer); toastNode.textContent=message; toastNode.classList.add('show'); state.toastTimer=setTimeout(()=>toastNode.classList.remove('show'),2800); }
 
+  function closeNexitDialog(){ document.querySelector('.nexit-dialog-overlay')?.remove(); }
+
+  function askText(title, initialValue=''){
+    return new Promise(resolve=>{
+      closeNexitDialog();
+      const overlay=document.createElement('div');
+      overlay.className='nexit-dialog-overlay';
+      overlay.innerHTML=`<section class="nexit-dialog" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}">
+        <h3>${escapeHtml(title)}</h3>
+        <input class="input nexit-dialog-input" type="text" value="${escapeHtml(initialValue)}" autocomplete="off">
+        <div class="nexit-dialog-actions"><button type="button" class="btn" data-dialog="cancel">Cancelar</button><button type="button" class="btn primary" data-dialog="accept">Aceptar</button></div>
+      </section>`;
+      const input=overlay.querySelector('.nexit-dialog-input');
+      const finish=value=>{overlay.remove();resolve(value);};
+      overlay.addEventListener('click',e=>{
+        const a=e.target?.dataset?.dialog;
+        if(a==='accept')finish(input.value.trim());
+        else if(a==='cancel'||e.target===overlay)finish(null);
+      });
+      overlay.addEventListener('keydown',e=>{
+        if(e.key==='Escape'){e.preventDefault();finish(null);}
+        else if(e.key==='Enter'){e.preventDefault();finish(input.value.trim());}
+      });
+      document.body.appendChild(overlay);
+      requestAnimationFrame(()=>{input.focus();input.select();});
+    });
+  }
+
+  function askConfirm(message){
+    return new Promise(resolve=>{
+      closeNexitDialog();
+      const overlay=document.createElement('div');
+      overlay.className='nexit-dialog-overlay';
+      overlay.innerHTML=`<section class="nexit-dialog" role="dialog" aria-modal="true" aria-label="Confirmar">
+        <h3>Confirmar</h3><div class="nexit-dialog-message"></div>
+        <div class="nexit-dialog-actions"><button type="button" class="btn" data-dialog="cancel">Cancelar</button><button type="button" class="btn primary" data-dialog="accept">Aceptar</button></div>
+      </section>`;
+      overlay.querySelector('.nexit-dialog-message').textContent=message;
+      const finish=value=>{overlay.remove();resolve(value);};
+      overlay.addEventListener('click',e=>{
+        const a=e.target?.dataset?.dialog;
+        if(a==='accept')finish(true);
+        else if(a==='cancel'||e.target===overlay)finish(false);
+      });
+      overlay.addEventListener('keydown',e=>{
+        if(e.key==='Escape'){e.preventDefault();finish(false);}
+        else if(e.key==='Enter'){e.preventDefault();finish(true);}
+      });
+      document.body.appendChild(overlay);
+      requestAnimationFrame(()=>overlay.querySelector('[data-dialog="accept"]')?.focus());
+    });
+  }
+
   function updateSchedule(patch){ const s={...getSchedule(state.selectedDay),...patch}; saveRecord('schedule',`schedule:${state.selectedDay}`,s); }
   function updateDayState(day,patch){ const ds={...getDayState(day),...patch,targetDay:day}; saveRecord('day_state',`state:${day}`,ds); }
   function updateSettings(patch){ const s={...getSettings(),...patch,updatedAt:nowIso()}; saveRecord('settings','settings:main',s); }
@@ -332,15 +385,15 @@
       else if(action==='open-reminder'){state.reminderDay=b.dataset.day;render();}
       else if(action==='close-reminder'){state.reminderDay=null;clearReminderUrl();render();}
       else if(action==='snooze-reminder'){const day=b.dataset.day, mins=Math.max(1,Number(getSettings().snoozeMinutes)||10);updateDayState(day,{snoozedUntil:new Date(Date.now()+mins*60000).toISOString()});state.reminderDay=null;clearReminderUrl();toast(`Recordatorio pospuesto ${mins} min.`);render();}
-      else if(action==='create-category'){const name=prompt('Nombre de la nueva categoría:');if(!name?.trim())return;const id=uid('cat');saveRecord('category',id,{id,name:name.trim(),items:[]});state.bankCategoryId=id;}
+      else if(action==='create-category'){const name=await askText('Nueva categoría');if(!name)return;const id=uid('cat');saveRecord('category',id,{id,name,items:[]});state.bankCategoryId=id;}
       else if(action==='add-category-to-day'){if(!state.bankCategoryId)return;const s=getSchedule(state.selectedDay), ids=[...(s.categoryIds||[])];if(!ids.includes(state.bankCategoryId))ids.push(state.bankCategoryId);updateSchedule({categoryIds:ids});}
-      else if(action==='manage-category'||action==='rename-category'){const id=b.dataset.category||state.bankCategoryId,c=getCategory(id);if(!c)return;const name=prompt('Nombre de la categoría:',c.name);if(name?.trim())saveRecord('category',id,{...c,name:name.trim()});}
+      else if(action==='manage-category'||action==='rename-category'){const id=b.dataset.category||state.bankCategoryId,c=getCategory(id);if(!c)return;const name=await askText('Renombrar categoría',c.name);if(name)saveRecord('category',id,{...c,name});}
       else if(action==='remove-category-from-day'){const id=b.dataset.category,s=getSchedule(state.selectedDay);updateSchedule({categoryIds:(s.categoryIds||[]).filter(x=>x!==id)});}
       else if(action==='toggle-category'){const id=b.dataset.category,ds=getDayState(state.selectedDay),set=new Set(ds.collapsedCategoryIds||[]);set.has(id)?set.delete(id):set.add(id);updateDayState(state.selectedDay,{collapsedCategoryIds:[...set]});}
-      else if(action==='add-category-item'){const id=b.dataset.category,c=getCategory(id),name=prompt('Nombre del nuevo ítem:');if(!c||!name?.trim())return;const item={id:uid(`${id}_item`),name:name.trim(),active:true};saveRecord('category',id,{...c,items:[...(c.items||[]),item]});}
-      else if(action==='delete-category-item'){const id=b.dataset.category,itemId=b.dataset.item,c=getCategory(id);if(!c||!confirm('¿Eliminar este ítem?'))return;saveRecord('category',id,{...c,items:(c.items||[]).filter(i=>i.id!==itemId)});removeCheckedKeys(k=>k===entryKeyCategory(id,itemId));}
-      else if(action==='delete-loose-item'){const itemId=b.dataset.item,s=getSchedule(state.selectedDay);if(!confirm('¿Eliminar este ítem suelto?'))return;updateSchedule({items:(s.items||[]).filter(i=>String(i.id)!==String(itemId))});removeCheckedKeys(k=>k===entryKeyLoose(itemId));}
-      else if(action==='add-loose-item'){const name=prompt('Nombre del nuevo ítem suelto:');if(!name?.trim())return;const s=getSchedule(state.selectedDay), max=Math.max(0,...(s.items||[]).map(i=>Number(i.id)||0));updateSchedule({items:[...(s.items||[]),{id:max+1,name:name.trim(),active:true}]});}
+      else if(action==='add-category-item'){const id=b.dataset.category,c=getCategory(id);if(!c)return;const name=await askText('Añadir ítem');if(!name)return;const item={id:uid(`${id}_item`),name,active:true};saveRecord('category',id,{...c,items:[...(c.items||[]),item]});}
+      else if(action==='delete-category-item'){const id=b.dataset.category,itemId=b.dataset.item,c=getCategory(id);if(!c||!await askConfirm('¿Eliminar este ítem?'))return;saveRecord('category',id,{...c,items:(c.items||[]).filter(i=>i.id!==itemId)});removeCheckedKeys(k=>k===entryKeyCategory(id,itemId));}
+      else if(action==='delete-loose-item'){const itemId=b.dataset.item,s=getSchedule(state.selectedDay);if(!await askConfirm('¿Eliminar este ítem suelto?'))return;updateSchedule({items:(s.items||[]).filter(i=>String(i.id)!==String(itemId))});removeCheckedKeys(k=>k===entryKeyLoose(itemId));}
+      else if(action==='add-loose-item'){const name=await askText('Añadir ítem suelto');if(!name)return;const s=getSchedule(state.selectedDay), max=Math.max(0,...(s.items||[]).map(i=>Number(i.id)||0));updateSchedule({items:[...(s.items||[]),{id:max+1,name,active:true}]});}
       else if(action==='activate-all'||action==='deactivate-all'){const value=action==='activate-all',s=getSchedule(state.selectedDay);updateSchedule({items:(s.items||[]).map(i=>({...i,active:value}))});for(const id of s.categoryIds||[]){const c=getCategory(id);if(c)saveRecord('category',id,{...c,items:(c.items||[]).map(i=>({...i,active:value}))},{render:false});}render();scheduleSync();}
       else if(action==='activate-local-alarms'){await window.NexitLocalAlarms.activate();await reconcileLocalAlarms(true);}
       else if(action==='test-local-alarm'){await window.NexitLocalAlarms.activate();await reconcileLocalAlarms(false);await window.NexitLocalAlarms.test();toast('Prueba local programada para dentro de 1 minuto.');}
