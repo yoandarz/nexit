@@ -33,6 +33,7 @@
     toastTimer: null,
     alarmBackend: {kind:'web',available:false,label:'Comprobando…'},
     alarmTimer: null,
+    installPrompt: null,
   };
 
   function stripAccents(value='') { return String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
@@ -202,7 +203,7 @@
               <select class="select" data-field="bank-category">${cats.map(c=>`<option value="${escapeHtml(c.id)}" ${c.id===state.bankCategoryId?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select>
               <button class="btn primary" data-action="add-category-to-day">Agregar al día</button>
               <button class="btn" data-action="create-category">Nueva</button>
-              <button class="btn" data-action="manage-category">Editar</button>
+              <button class="btn" data-action="manage-category">Renombrar</button>
             </div>
           </section>
           <section class="panel">
@@ -236,7 +237,7 @@
     return `<article class="card"><div class="card-head">
       <button class="btn small" data-action="toggle-category" data-category="${escapeHtml(category.id)}">${collapsed?'Mostrar':'Ocultar'}</button>
       <h4>${escapeHtml(category.name)}</h4><span class="state ${p.cls}">${p.text}</span>
-      <button class="btn small" data-action="rename-category" data-category="${escapeHtml(category.id)}">Editar</button>
+      <button class="btn small" data-action="rename-category" data-category="${escapeHtml(category.id)}">Renombrar</button>
       <button class="btn small" data-action="remove-category-from-day" data-category="${escapeHtml(category.id)}">Quitar</button>
       </div>${rows}${collapsed?'':`<div class="footer-actions"><button class="btn small" data-action="add-category-item" data-category="${escapeHtml(category.id)}">+ Añadir ítem</button></div>`}</article>`;
   }
@@ -250,6 +251,10 @@
     return `<article class="card"><div class="card-head"><h4>Ítems sueltos</h4></div>${rows||'<div class="muted" style="margin-top:10px">No hay ítems sueltos.</div>'}<div class="footer-actions"><button class="btn small" data-action="add-loose-item">+ Añadir ítem suelto</button></div></article>`;
   }
 
+  function isInstalledApp(){
+    return !!window.NexitNativeAndroid || window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone===true;
+  }
+
   function settingsModalHtml(settings){
     const backend=state.alarmBackend||{label:'Comprobando…',available:false};
     return `<div class="modal-backdrop" data-action="backdrop-settings"><section class="modal" role="dialog" aria-modal="true"><div class="section-head"><h3>Ajustes</h3><button class="btn small" data-action="close-settings">Cerrar</button></div>
@@ -259,6 +264,7 @@
         <div class="setting-row"><div><strong>Motor de este dispositivo</strong><div class="muted">${backend.available?'Disponible y local.':'La web pura no garantiza alarmas con Nexit cerrado.'}</div></div><div class="actions"><button class="btn primary small" data-action="activate-local-alarms">Activar</button><button class="btn small" data-action="test-local-alarm">Probar 1 min</button></div></div>
         <div class="setting-row"><div><strong>Posposición</strong><div class="muted">Minutos al pulsar “Posponer”.</div></div><input class="input" style="width:110px" type="number" min="1" max="240" value="${Number(settings.snoozeMinutes)||10}" data-field="setting-snooze"></div>
         <div class="setting-row"><div><strong>Apariencia</strong></div><select class="select" style="width:150px" data-field="setting-appearance"><option value="light" ${settings.appearance==='light'?'selected':''}>Claro</option><option value="dark" ${settings.appearance!=='light'?'selected':''}>Oscuro</option></select></div>
+        <div class="setting-row"><div><strong>Instalación</strong><div class="muted">${isInstalledApp()?'Nexit ya está instalada en este dispositivo.':state.installPrompt?'Lista para instalar en este navegador.':'La instalación aparecerá aquí cuando el navegador la habilite.'}</div></div><button class="btn primary" data-action="install-app" ${isInstalledApp()?'disabled':''}>${isInstalledApp()?'Instalada':'Instalar Nexit'}</button></div>
         <div class="setting-row"><div><strong>Cuenta</strong><div class="muted">${escapeHtml(state.session.user.email||'')}</div></div><button class="btn danger" data-action="sign-out">Cerrar sesión</button></div>
       </div></section></div>`;
   }
@@ -338,6 +344,16 @@
       else if(action==='activate-all'||action==='deactivate-all'){const value=action==='activate-all',s=getSchedule(state.selectedDay);updateSchedule({items:(s.items||[]).map(i=>({...i,active:value}))});for(const id of s.categoryIds||[]){const c=getCategory(id);if(c)saveRecord('category',id,{...c,items:(c.items||[]).map(i=>({...i,active:value}))},{render:false});}render();scheduleSync();}
       else if(action==='activate-local-alarms'){await window.NexitLocalAlarms.activate();await reconcileLocalAlarms(true);}
       else if(action==='test-local-alarm'){await window.NexitLocalAlarms.activate();await reconcileLocalAlarms(false);await window.NexitLocalAlarms.test();toast('Prueba local programada para dentro de 1 minuto.');}
+      else if(action==='install-app'){
+        if(isInstalledApp()){toast('Nexit ya está instalada.');return;}
+        const p=state.installPrompt;
+        if(!p){toast('La instalación todavía no está disponible. Recarga Nexit y vuelve a Ajustes.');return;}
+        p.prompt();
+        const choice=await p.userChoice;
+        state.installPrompt=null;
+        toast(choice.outcome==='accepted'?'Instalación iniciada.':'Instalación cancelada.');
+        render();
+      }
       else if(action==='sign-out'){await flushDirty();await client.auth.signOut();state.session=null;state.settingsOpen=false;render();}
       else if(action==='backdrop-settings' && e.target===b){state.settingsOpen=false;render();}
     }catch(err){console.error(err);toast(err.message||String(err));}
@@ -360,6 +376,8 @@
     else if(f==='setting-appearance')updateSettings({appearance:el.value==='light'?'light':'dark'});
   });
 
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();state.installPrompt=e;if(state.settingsOpen)render();});
+  window.addEventListener('appinstalled',()=>{state.installPrompt=null;if(state.settingsOpen)render();toast('Nexit instalada.');});
   window.addEventListener('online',()=>{state.syncState='pending';syncAll(false)}); window.addEventListener('offline',()=>{state.syncState='offline';renderStatusOnly()});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncAll(false)});
   setInterval(()=>syncAll(false),20000);
