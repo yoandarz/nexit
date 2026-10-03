@@ -1,0 +1,2 @@
+ac2194078ed5c1becf8a51f0ab0768cc8af38bf481c42a527aedada350f95b9d  /mnt/data/Nexit_STICKY_PROGRESO_2026-10-03/app.js
+739741a204bb557d91d7b7e46cd9bbc9c2e653cb2bc0eb7e7301c1d1b624136a  /mnt/data/Nexit_STICKY_PROGRESO_2026-10-03/styles.css

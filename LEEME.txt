@@ -1,0 +1,14 @@
+NEXIT — PROGRESO STICKY POR CATEGORÍA
+Fecha: 2026-10-03
+
+ARCHIVOS A REEMPLAZAR EN LA RAÍZ DEL REPOSITORIO:
+1. app.js
+2. styles.css
+
+NO AÑADIR NI MODIFICAR OTROS ARCHIVOS.
+
+Qué cambia:
+- El encabezado ya existente de cada categoría pasa a ser sticky.
+- El mismo indicador de progreso existente (Pendiente/Completa y fracción done/total) permanece visible mientras se recorre esa categoría.
+- Al salir de una categoría, su encabezado deja de fijarse; la siguiente categoría toma el relevo.
+- No se modifica almacenamiento, Supabase, sincronización, alarmas, modelo de datos, service worker ni lógica de cálculo del progreso.

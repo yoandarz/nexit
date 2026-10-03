@@ -234,7 +234,7 @@
         <button class="btn small danger delete-item" data-action="delete-category-item" data-category="${escapeHtml(category.id)}" data-item="${escapeHtml(item.id)}">Eliminar</button>
       </div>`;
     }).join('');
-    return `<article class="card"><div class="card-head">
+    return `<article class="card"><div class="card-head category-sticky-head">
       <button class="btn small" data-action="toggle-category" data-category="${escapeHtml(category.id)}">${collapsed?'Mostrar':'Ocultar'}</button>
       <h4>${escapeHtml(category.name)}</h4><span class="state ${p.cls}">${p.text}</span>
       <button class="btn small" data-action="rename-category" data-category="${escapeHtml(category.id)}">Renombrar</button>
