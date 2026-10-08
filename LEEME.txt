@@ -1,14 +1,16 @@
-NEXIT — PROGRESO STICKY POR CATEGORÍA
-Fecha: 2026-10-03
+NEXIT — SELECTOR DE COLOR PARA BARRA STICKY
+Fecha: 2026-10-08
 
 ARCHIVOS A REEMPLAZAR EN LA RAÍZ DEL REPOSITORIO:
 1. app.js
 2. styles.css
 
-NO AÑADIR NI MODIFICAR OTROS ARCHIVOS.
+No es necesario tocar ningún otro archivo.
 
-Qué cambia:
-- El encabezado ya existente de cada categoría pasa a ser sticky.
-- El mismo indicador de progreso existente (Pendiente/Completa y fracción done/total) permanece visible mientras se recorre esa categoría.
-- Al salir de una categoría, su encabezado deja de fijarse; la siguiente categoría toma el relevo.
-- No se modifica almacenamiento, Supabase, sincronización, alarmas, modelo de datos, service worker ni lógica de cálculo del progreso.
+FUNCIONAMIENTO
+- La barra sticky conserva exactamente el contador de progreso existente.
+- Color inicial: Dorado.
+- El botón 🎨 alterna: Dorado → Coral → Magenta → Violeta → Lima → Crema.
+- El color elegido se guarda localmente en el dispositivo mediante localStorage.
+- No modifica Supabase, sincronización, alarmas ni modelo de datos.
+- Al marcar/desmarcar ítems, el progreso sigue actualizándose mediante la lógica existente.

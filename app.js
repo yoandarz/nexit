@@ -16,6 +16,15 @@
   const DAY_LABELS = {lunes:'Lunes',martes:'Martes',miercoles:'Miércoles',jueves:'Jueves',viernes:'Viernes',sabado:'Sábado',domingo:'Domingo'};
   const CACHE_KEY = 'nexit_cache_v3';
   const UI_KEY = 'nexit_ui_v3';
+  const STICKY_COLOR_KEY = 'nexit_sticky_color_v1';
+  const STICKY_COLORS = [
+    {key:'gold',name:'Dorado'},
+    {key:'coral',name:'Coral'},
+    {key:'magenta',name:'Magenta'},
+    {key:'violet',name:'Violeta'},
+    {key:'lime',name:'Lima'},
+    {key:'cream',name:'Crema'},
+  ];
   const appRoot = document.getElementById('app');
   const toastNode = document.getElementById('toast');
 
@@ -42,6 +51,17 @@
   function uid(prefix='id'){ return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`; }
   function nowIso(){ return new Date().toISOString(); }
   function parseIso(value){ const t=Date.parse(value||''); return Number.isFinite(t)?t:0; }
+  function stickyColorKey(){
+    const saved=localStorage.getItem(STICKY_COLOR_KEY)||'gold';
+    return STICKY_COLORS.some(c=>c.key===saved)?saved:'gold';
+  }
+  function cycleStickyColor(){
+    const current=stickyColorKey();
+    const index=STICKY_COLORS.findIndex(c=>c.key===current);
+    const next=STICKY_COLORS[(index+1)%STICKY_COLORS.length];
+    localStorage.setItem(STICKY_COLOR_KEY,next.key);
+    return next;
+  }
 
   function loadLocal(){
     try { const raw=JSON.parse(localStorage.getItem(CACHE_KEY)||'[]'); if(Array.isArray(raw)) state.records=raw; } catch{}
@@ -234,9 +254,10 @@
         <button class="btn small danger delete-item" data-action="delete-category-item" data-category="${escapeHtml(category.id)}" data-item="${escapeHtml(item.id)}">Eliminar</button>
       </div>`;
     }).join('');
-    return `<article class="card"><div class="card-head category-sticky-head">
+    return `<article class="card"><div class="card-head category-sticky-head" data-sticky-color="${stickyColorKey()}">
       <button class="btn small" data-action="toggle-category" data-category="${escapeHtml(category.id)}">${collapsed?'Mostrar':'Ocultar'}</button>
       <h4>${escapeHtml(category.name)}</h4><span class="state ${p.cls}">${p.text}</span>
+      <button class="sticky-color-btn" type="button" data-action="cycle-sticky-color" title="Cambiar color de la barra" aria-label="Cambiar color de la barra">🎨</button>
       <button class="btn small" data-action="rename-category" data-category="${escapeHtml(category.id)}">Renombrar</button>
       <button class="btn small" data-action="remove-category-from-day" data-category="${escapeHtml(category.id)}">Quitar</button>
       </div>${rows}${collapsed?'':`<div class="footer-actions"><button class="btn small" data-action="add-category-item" data-category="${escapeHtml(category.id)}">+ Añadir ítem</button></div>`}</article>`;
@@ -379,6 +400,7 @@
     const b=e.target.closest('[data-action]'); if(!b)return; const action=b.dataset.action;
     try{
       if(action==='select-day'){state.selectedDay=b.dataset.day;persistLocal();render();}
+      else if(action==='cycle-sticky-color'){const next=cycleStickyColor();render();toast(`Barra: ${next.name}`);}
       else if(action==='open-settings'){state.settingsOpen=true;state.alarmBackend=await window.NexitLocalAlarms.backend();render();}
       else if(action==='close-settings'){state.settingsOpen=false;render();}
       else if(action==='sync-now'){await syncAll(true);}
